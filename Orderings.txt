@@ -2,3 +2,4 @@ Reichelt
 	scm
 		Artikel-Nr.: EBB 35
 		Artikel-Nr.: LUM KLB 4
+		2 x Artikel-Nr.: KSK 1A87
