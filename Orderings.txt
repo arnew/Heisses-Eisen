@@ -1,5 +1,15 @@
+== Bestellt ==
+ebay
+	philip
+		10x MSOP-8 adapter - 6,40€
+
+== Todo ==
 Reichelt
 	scm
 		Artikel-Nr.: EBB 35
 		Artikel-Nr.: LUM KLB 4
 		2 x Artikel-Nr.: KSK 1A87
+
+	philip
+		AD 8495	AR x5
+		
