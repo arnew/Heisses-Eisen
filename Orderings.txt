@@ -1,0 +1,4 @@
+Reichelt
+	scm
+		Artikel-Nr.: EBB 35
+		Artikel-Nr.: LUM KLB 4
