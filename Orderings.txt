@@ -1,10 +1,9 @@
 == Bestellt ==
-ebay
+ebay - 08.01
 	philip
 		10x MSOP-8 adapter - 6,40€
 
-== Todo ==
-Reichelt
+Reichelt - 09.01
 	scm
 		Artikel-Nr.: EBB 35
 		Artikel-Nr.: LUM KLB 4
@@ -12,4 +11,15 @@ Reichelt
 
 	philip
 		AD 8495	AR x5
-		
+		RKT 8012 x1
+		kabelschuhe
+		crimpzange FSH
+		trafo
+		gehäuse
+		kleinkram
+		WMRP-Spitze meißel
+		...
+	iro
+		ut 61c
+
+== Todo ==

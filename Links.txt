@@ -10,6 +10,7 @@ röntgen:
 
 Buchse:
 http://www.mikrocontroller.net/topic/152677#new
+http://www.conrad.de/ce/de/product/740077/?insert=62&insertNoDeeplink&productname=GERAeTEDOSE-MIT-RINGMUTTER-7-POL kann man wohl passend umbauen http://www.mikrocontroller.net/topic/143288#new
 
 
 Thermocouple amp:
