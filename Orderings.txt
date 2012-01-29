@@ -27,4 +27,11 @@ Reichelt - 09.01
 Reichelt
 	philip
 		50W Metall 3,3 x1
+	arnew
+		10x TRÄGE 0,315A
+		1x USA-SF 0,5A
+		2x F-120KA 10A
+		2x USA-FLINK 0,315A
+		5x CR2032
+		
 
