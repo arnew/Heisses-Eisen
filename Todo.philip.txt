@@ -1,1 +1,2 @@
 Design temperature sensing circuit around AD 8495
+ - works on breadboard
