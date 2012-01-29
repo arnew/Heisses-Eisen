@@ -23,3 +23,8 @@ Reichelt - 09.01
 		ut 61c
 
 == Todo ==
+
+Reichelt
+	philip
+		50W Metall 3,3 x1
+
