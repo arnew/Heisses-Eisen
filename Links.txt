@@ -3,16 +3,19 @@ WMRP:
 http://www.mikrocontroller.net/topic/175412#new 
 http://www.youtube.com/watch?v=SP2Ir1r-Gy8 
 http://www.testequipmentdepot.com/weller/pdf/wmrs_manu.pdf
-http://www.eis-inc.com/Files/pdf/supplier_showcase_page_downloads/weller/WR3M_Series_Rework_Systems_Calibration.pdf - bestätigung Typ K in WMRP und platin RTD in WSP80!
+http://www.eis-inc.com/Files/pdf/supplier_showcase_page_downloads/weller/WR3M_Series_Rework_Systems_Calibration.pdf
+  - bestätigung Typ K in WMRP und platin RTD in WSP80!
 
-röntgen:
- http://www.mikrocontroller.net/topic/199412#new
+Röntgen:
+http://www.mikrocontroller.net/topic/199412#new
 
 Buchse:
 http://www.mikrocontroller.net/topic/152677#new
-http://www.conrad.de/ce/de/product/740077/?insert=62&insertNoDeeplink&productname=GERAeTEDOSE-MIT-RINGMUTTER-7-POL kann man wohl passend umbauen http://www.mikrocontroller.net/topic/143288#new
+http://www.conrad.de/ce/de/product/740077/?insert=62&insertNoDeeplink&productname=GERAeTEDOSE-MIT-RINGMUTTER-7-POL 
+  - kann man wohl passend umbauen http://www.mikrocontroller.net/topic/143288#new
 
 
 Thermocouple amp:
 http://www.analog.com/en/mems-sensors/analog-temperature-sensors/ad8495/products/product.html
 http://www.analog.com/static/imported-files/application_notes/AN-1087.PDF
+  - AD8495 inzwischen in benutzung. 5mV/°C output
