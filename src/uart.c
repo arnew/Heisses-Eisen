@@ -47,9 +47,10 @@ uchar_t uart_getc(void) {
 
 
 ISR(USART_RXC_vect) {
+	uchar_t buf = UDR; // only read once!
 	if (uart_str_complete == 0) {
-		if (UDR !='\n' && uart_str_count < UART_MAX_STR_LEN) {
-			uart_buffer[uart_str_count++] = UDR;
+		if (buf !='\n' && buf != '\r' && uart_str_count < UART_MAX_STR_LEN) {
+			uart_buffer[uart_str_count++] = buf;
 		} else {
 			uart_buffer[uart_str_count] = '\0';
 			uart_str_count = 0;
