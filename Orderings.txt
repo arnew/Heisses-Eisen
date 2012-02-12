@@ -33,5 +33,6 @@ Reichelt
 		2x F-120KA 10A
 		2x USA-FLINK 0,315A
 		5x CR2032
+		1x ESD FERSENBAND
 		
 
