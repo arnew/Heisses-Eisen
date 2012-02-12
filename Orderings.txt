@@ -26,7 +26,18 @@ Reichelt - 09.01
 
 Reichelt
 	philip
-		50W Metall 3,3 x1
+		1x 50W Metall 3,3
+		3x LTC 1050 CN8
+		2x AD 8552 AR
+		2x 64W-100K
+		4x PL 112000
+		2x PFRA 050
+		10x TRÄGE 1,25A
+		1x WANDLER D-A
+		1x LWL TOS 1
+		1x HT 400-250
+		1x AVK 132-200
+
 	arnew
 		10x TRÄGE 0,315A
 		1x USA-SF 0,5A
