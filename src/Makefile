@@ -31,5 +31,22 @@ clean:
 	-rm -rf $(PROJECT).elf $(PROJECT).hex
 
 upload:
+
+#programmer
+#  id    = "ft232r";
+#  desc  = "FT232R Synchronous BitBang";
+#  type  = ft245r;
+##CTS SCK
+##RTS MOSI
+##RI MISO
+##DTR RST
+#  miso  = 7;  # RI
+#  sck   = 3;  # CTS
+#  mosi  = 2;  # RTS
+#  reset = 4;  # DTR ok
+#;
+
 	-echo "fixme"
+# tortilla ftdi bit bang:
+# avrdude -c ft232r -p m8 -P ft0 -U XXX
 #	-avrdude -c avr910 -P /dev/ttyUSB0 -p m8 -i5 -U flash:w:$(PROJECT).hex -V
