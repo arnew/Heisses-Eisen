@@ -19,7 +19,7 @@ void report_adc_val() {
 	uint16_t res0 = read_adc(0);
 	uint16_t res1 = read_adc(1);
 	char buf[30];
-	snprintf(buf,30,"%u,%u: %u.%c",res0,res1, res0>>1, (res0&1)?'5':'0');
+	snprintf(buf,30,"%u,%u: %u.%c\r\n",res0,res1, res0>>1, (res0&1)?'5':'0');
 	uart_puts(buf);
 }
 
