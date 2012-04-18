@@ -22,11 +22,10 @@ Reichelt - 09.01
 	iro
 		ut 61c
 
-== Todo ==
 
 Reichelt
 	philip
-		1x 50W Metall 3,3
+		1x HAL 40 GY
 		3x LTC 1050 CN8
 		2x AD 8552 AR
 		2x 64W-100K
@@ -45,5 +44,8 @@ Reichelt
 		2x USA-FLINK 0,315A
 		5x CR2032
 		1x ESD FERSENBAND
+
+
+== Todo ==
 		
 
