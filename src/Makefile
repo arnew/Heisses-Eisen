@@ -46,7 +46,7 @@ upload:
 #  reset = 4;  # DTR ok
 #;
 
-	-echo "fixme"
+	#-echo "fixme"
 # tortilla ftdi bit bang:
-# avrdude -c ft232r -p m8 -P ft0 -U XXX
+	 sudo avrdude -c ft232r -p m8 -P ft0 -U flash:w:$(PROJECT).hex -V
 #	-avrdude -c avr910 -P /dev/ttyUSB0 -p m8 -i5 -U flash:w:$(PROJECT).hex -V
