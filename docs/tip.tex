@@ -1,9 +1,39 @@
 % vim:spell:spelllang=en_us
 \section{mechanical tip properties}
+Weller WMRP tip "RT 3" 1,3x0,4mm
+approx 10cm
+tip, heater, sensor, grip, 3,5mm jack
+nominal 
+
 
 \section{thermal element}
 
+
 \subsection{common element types}
-\subsection{custom measument amplifier}
+type K -> tried AD8495 AR: $5mV/\deg C$ output
+other types: very unlikely
+
+
+\subsection{custom measurement amplifier}
+to accurately measure the thermocouple voltage and to record the tips characteristics, an amplifier has to satisfy the following conditions:
+- Very high input resistance (thus very low input current) because of the t/cs low impedance
+- very low offset to be able to amplify signals in the microvolt-range
+- rail-to-rail input and output, because of low input voltage and 5V supply
+- high linearity (low gain error)
+
+AD 8552 AR
+provides:
+ - $1\,\mu V$ offset
+ - $0,005\,\mu V/\deg C$ drift
+
+
+With the AD 8552 a simple non-inverting amp was constructed. Gain was trimmed to $g=400$.
+
+Previously constructed AD8495 circuit was used to provide reference temperature information.
+
+WMRP Tip, reference type K thermocouple were closely thermally coupled to another soldering iron. An Atmel Atmega8 MCU with an 10bit ADC was used to record data.
+
+First results showed a linear dependence of thermocouple voltage and temperature in a range of 150-250 $\deg C$ with a coefficient of about $16\,\mu V/K$.
+
 
 \section{heating element}
