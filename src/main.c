@@ -14,6 +14,16 @@ extern uint8_t uart_str_complete; 		// global status indicating pending rx'd lin
 extern volatile uint8_t uart_str_count; 		// points to next "free" array index
 extern uchar_t uart_buffer[];
 
+int foo;
+
+ISR(INT0_vect) {
+	foo ++;
+	if(foo%2) {
+		PORTD |= ( 1 << PD7);
+	} else {
+		PORTD &= ~( 1 << PD7);
+	}
+}
 
 void report_adc_val() {
 	uint16_t res0 = read_adc(0);
@@ -25,8 +35,22 @@ void report_adc_val() {
 
 int main(void) {
 	DDRC = 0x00;
+
+	// enable interrupt
+	GICR = (1 << INT0);
+	MCUCR = (1 << ISC10);
+
 	uart_init(UBRR_VAL);
 	adc_init(ADC_REF_INT);
+
+	// eingang + pullup
+	DDRD &=  ~(1 << PD2);
+	PORTD &= ~(1 << PD2);
+
+
+	// D7 output, low
+	DDRD |= (1 << PD7);
+	PORTD &= ~( 1 << PD7);
 
 //	TCCR0 |= (1 << CS02) | (1 << CS00); // Timer0, Clock/1024
 //	TIMSK |= (1<<TOIE0); //Interrupt auf Overflow
