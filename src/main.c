@@ -25,7 +25,7 @@ volatile struct {
 	int imin,imax;
 	uint16_t soll;
 	uint16_t tmax;
-} control={7,0,9,4    ,0,100,    300,375};
+} control={7,1,9,4    ,0,1000,    150,375};
 
 volatile struct {
 	int d;
@@ -58,13 +58,13 @@ ISR(INT0_vect) {
 
 		if(controlstate.ist > control.tmax) return;
 
-		int error = control.soll - controlstate.ist;
-		int p = error << control.p;
+		int32_t error = control.soll - controlstate.ist;
+		int32_t p = error << control.p;
 		controlstate.i += error;
 		if(controlstate.i > control.imax) controlstate.i = control.imax;
 		else if(controlstate.i < control.imin) controlstate.i = control.imin;
-		int i = controlstate.i << control.i;
-		int d = (controlstate.ist - controlstate.d) << control.d;
+		int32_t i = controlstate.i << control.i;
+		int32_t d = (controlstate.ist - controlstate.d) << control.d;
 		controlstate.d = controlstate.ist;
 
 		controlstate.stell = (p + i - d) >> control.scale;
@@ -72,10 +72,10 @@ ISR(INT0_vect) {
 		if(controlstate.stell < 0 ) return;
 
 		// todo: replace this with phasenanschnittsteuerung
-		if(controlstate.stell > 100 || rand() < controlstate.stell * RAND_MAX) {
+		if(controlstate.stell > 100 || rand() * controlstate.stell / RAND_MAX) {
 			stats.rawduty++;
 			PORTD |= ( 1 << PD7);
-			//_delay_us(500);
+			_delay_us(500);
 			PORTD &= ~( 1 << PD7);
 		}
 	}
