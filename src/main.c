@@ -24,7 +24,8 @@ volatile struct {
 	int scale;
 	uint8_t imin,imax;
 	uint16_t soll;
-} control={100,0,0,100,0,50,100};
+	uint16_t tmax;
+} control={100,1,500,10,0,50,100,375};
 
 volatile struct {
 	uint8_t d;
@@ -43,21 +44,21 @@ volatile struct {
 	int offset;
 	int numerator;
 	int denominator;
-} calib = {0,1,1};
+} calib = {50,2,5};
 
 ISR(INT0_vect) {
 	// do we need a rate limit by comparing with a timer?
 	if(bit_is_set(PIND, PD2)) { // rising edge only
 		stats.pulse++;
-		controlstate.ist = calib.offset + read_adc(0)*calib.numerator / calib.denominator;
+		controlstate.ist = calib.offset + (int)read_adc(0)*calib.numerator / calib.denominator;
 
-		if(controlstate.ist > 250) return;
+		if(controlstate.ist > control.tmax) return;
 
 		int error = control.soll - controlstate.ist;
 		int p = control.p * error;
 		controlstate.i += error;
-		if(controlstate.i > control.imax) controlstate.i = control.imax;
-		if(controlstate.i < control.imin) controlstate.i = control.imin;
+		if(controlstate.i > control.imax*control.scale) controlstate.i = control.imax*control.scale;
+		else if(controlstate.i < control.imin*control.scale) controlstate.i = control.imin*control.scale;
 		int i = control.i * controlstate.i;
 		int d = control.d * (controlstate.ist - controlstate.d) ;
 		controlstate.d = controlstate.ist;
@@ -66,7 +67,8 @@ ISR(INT0_vect) {
 
 		if(controlstate.stell < 0 ) return;
 
-		if(rand() / RAND_MAX < controlstate.stell) {
+		// todo: replace this with phasenanschnittsteuerung
+		if(controlstate.stell > 100 || rand() < controlstate.stell * RAND_MAX) {
 			stats.rawduty++;
 			PORTD |= ( 1 << PD7);
 			_delay_us(500);
@@ -113,6 +115,7 @@ void process_cmd(char *p) {
 		case 'j': control.imax = atoi(p+1); break;
 		case 'D': control.d = atoi(p+1); break;
 		case 'T': control.soll = atoi(p+1); break;
+		case 'X': control.tmax = atoi(p+1); break;
 		case 'B': calib.offset = atoi(p+1); break;
 		case 'M': calib.numerator = atoi(p+1); break;
 		case 'N': calib.denominator = atoi(p+1); break;
@@ -121,12 +124,16 @@ void process_cmd(char *p) {
 			  uart_puts(
 					  "R <ticks>: update rate\r\n"
 					  "S: show status \r\n"
+					  "\r\n"
 					  "P <>: control P gain\r\n"
 					  "I <>: control I gain\r\n"
-					  "i <>: control imin\r\n"
-					  "j <>: control imax\r\n"
 					  "D <>: control D gain\r\n"
+					  "\r\n"
 					  "T <>: control temperature\r\n"
+					  "X <>: shutoff temperature\r\n"
+					  "i <>: control Imin\r\n"
+					  "j <>: control Imax\r\n"
+					  "\r\n"
 					  "calib: y=M/N * x + B\r\n"
 				   );
 			  break;
