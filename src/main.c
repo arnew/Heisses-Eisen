@@ -22,15 +22,15 @@ volatile struct {
 volatile struct {
 	int p,i,d;
 	int scale;
-	uint8_t imin,imax;
+	int imin,imax;
 	uint16_t soll;
 	uint16_t tmax;
-} control={100,1,500,10,0,50,100,375};
+} control={7,0,9,4    ,0,100,    300,375};
 
 volatile struct {
-	uint8_t d;
-	uint8_t i;
-	uint16_t ist;
+	int d;
+	int i;
+	int ist;
 	int stell;
 } controlstate = {0,0,0,0};
 
@@ -44,26 +44,30 @@ volatile struct {
 	int offset;
 	int numerator;
 	int denominator;
-} calib = {50,2,5};
+} calib 
+//= {50,2,5};
+={50,2,5};
 
 ISR(INT0_vect) {
 	// do we need a rate limit by comparing with a timer?
 	if(bit_is_set(PIND, PD2)) { // rising edge only
 		stats.pulse++;
-		controlstate.ist = calib.offset + (int)read_adc(0)*calib.numerator / calib.denominator;
+		int temp = calib.offset + ((int)read_adc(0))*calib.numerator / calib.denominator;
+		controlstate.ist+=temp;
+		controlstate.ist>>=1;
 
 		if(controlstate.ist > control.tmax) return;
 
 		int error = control.soll - controlstate.ist;
-		int p = control.p * error;
+		int p = error << control.p;
 		controlstate.i += error;
-		if(controlstate.i > control.imax*control.scale) controlstate.i = control.imax*control.scale;
-		else if(controlstate.i < control.imin*control.scale) controlstate.i = control.imin*control.scale;
-		int i = control.i * controlstate.i;
-		int d = control.d * (controlstate.ist - controlstate.d) ;
+		if(controlstate.i > control.imax) controlstate.i = control.imax;
+		else if(controlstate.i < control.imin) controlstate.i = control.imin;
+		int i = controlstate.i << control.i;
+		int d = (controlstate.ist - controlstate.d) << control.d;
 		controlstate.d = controlstate.ist;
 
-		controlstate.stell = (p + i - d) / control.scale;
+		controlstate.stell = (p + i - d) >> control.scale;
 
 		if(controlstate.stell < 0 ) return;
 
@@ -71,7 +75,7 @@ ISR(INT0_vect) {
 		if(controlstate.stell > 100 || rand() < controlstate.stell * RAND_MAX) {
 			stats.rawduty++;
 			PORTD |= ( 1 << PD7);
-			_delay_us(500);
+			//_delay_us(500);
 			PORTD &= ~( 1 << PD7);
 		}
 	}
@@ -85,7 +89,7 @@ ISR(TIMER0_OVF_vect)
 
 void showstatus() {
 	char buf[80];
-	snprintf(buf,80,"PID: P: %i I: %i D: %i imin: %u imax: %u\r\n",control.p,control.i, control.d, control.imin, control.imax);
+	snprintf(buf,80,"PID: P: %i I: %i D: %i imin: %i imax: %i\r\n",control.p,control.i, control.d, control.imin, control.imax);
 	uart_puts(buf);
 	snprintf(buf,80,"calib: y= %i/%i * x + %i\r\n",calib.numerator, calib.denominator, calib.offset);
 	uart_puts(buf);
@@ -94,7 +98,7 @@ void showstatus() {
 
 void showupdate() {
 	char buf[80];
-	snprintf(buf,80,"soll: %u ist: %i i: %i d: %i stell: %i On: %d #: %d duty: %u%%\r\n",
+	snprintf(buf,80,"soll: %3u ist: %3i i: %i d: %3i stell: %4i On: %2d #: %2d duty: %3u%%\r\n",
 			control.soll,
 			controlstate.ist ,controlstate.i,controlstate.d,
 			controlstate.stell,
