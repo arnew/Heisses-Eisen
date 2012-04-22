@@ -30,7 +30,7 @@ $(TARGET): $(OBJECTS)
 clean: 
 	-rm -rf $(PROJECT).elf $(PROJECT).hex
 
-upload:
+upload: all
 
 #programmer
 #  id    = "ft232r";
