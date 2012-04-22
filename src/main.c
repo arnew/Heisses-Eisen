@@ -75,9 +75,9 @@ ISR(INT0_vect) {
 		if(controlstate.stell > 100 || rand() * controlstate.stell / RAND_MAX) {
 			stats.rawduty++;
 			PORTD |= ( 1 << PD7);
-			_delay_us(500);
-			PORTD &= ~( 1 << PD7);
 		}
+	} else {
+		PORTD &= ~( 1 << PD7);
 	}
 }
 
