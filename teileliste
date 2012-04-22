@@ -8,21 +8,21 @@ Energieversorgung:
 	KES 1 - buchse
 	TEKO 383 - gehaeuse
 	µA 7805 - Linearregler
-	??? - R
-	??? - C
+	B250C1500RUND - gleichrichter
+	RAD 100/25 - elko für netzteil
+	2x MKS-2-5 100N C für regler
 
 Leistungsteil:
-	TK226 - Triac
-	MOC3020 - Optokoppler
-	CNY17-2 - Optokoppler
-	??? - R
-	??? - C
+	TIC226D - Triac
+	MOC3020 - Optokoppler ansteuerung
+	CNY17-2 - Optokoppler nulldurchgang
+	300, 470 Ohm - R
+	2x V 4330N - kühlköper für TO220
 
 Messteil:
-	AD8552 [oder LTC1050] - Opamp
-	??? - R
-	??? - C
-	??? - Trimmer
+	AD8552 [oder LTC1050] - Opamp - bevorzugt LTC 1050 da DIP
+	MPR 270K, MPR 680 - widerstände 0,1% für messverst.
+	MKS-2-5 100N - für +5V des amps
 	
 loetspitze:
 	WELLER RT 3 - loetspitze
@@ -35,7 +35,7 @@ steuerung:
 	??? - quarz
 	SC 39-11 GN - 7 segment anzeige
 	74HCT 4094 - schieberegister
-	??? - R
+	300 Ohm - R - vorwiderstände
 	??? - C
 
 	
