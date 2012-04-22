@@ -20,6 +20,7 @@ Leistungsteil:
 
 Messteil:
 	AD8552 [oder LTC1050] - Opamp
+	??? - SO-8 Adapter
 	??? - R
 	??? - C
 	??? - Trimmer
