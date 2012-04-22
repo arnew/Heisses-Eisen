@@ -1,0 +1,29 @@
+
+Energieversorgung:
+	RKT 8012 - Trafo 2x12V
+	EI 30/12,5 106 - Trafo 2x 6V 1VA
+	EI 42/14,8 206 - Trafo 2x 6V 5VA
+	WIPPE 1801.6115 - schalter
+	PL FPG1-40 - sicherungshalter
+	TRÄGE 1,8A - sicherung
+	KES 1 - buchse
+	TEKO 383 - gehaeuse
+	µA 7805 - Linearregler
+
+Leistungsteil:
+	TK226 - Triac
+	MOC3020 - Optokoppler
+	CNY17-2 - Optokoppler
+	??? - R
+	??? - C
+
+Messteil:
+	AD8552 [oder LTC1050] - Opamp
+	
+loetspitze:
+	WELLER RT 3
+	??? - klinkenbuchse
+	KSK 1A87 - REED kontakt
+	LIYY 614-5 - anschlussleitung
+
+
