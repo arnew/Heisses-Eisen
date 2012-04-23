@@ -29,6 +29,8 @@ loetspitze:
 	EBB 35 - klinkenbuchse
 	KSK 1A87 - REED kontakt
 	LIYY 614-5 - anschlussleitung
+	XLR 5ST - stecker
+	XLR 5EB - buchse
 
 steuerung:
 	ATMEGA 8L8 - controller
