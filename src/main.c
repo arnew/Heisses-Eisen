@@ -47,8 +47,8 @@ typedef struct {
 	int ticks;
 } s_update;
 
-volatile s_control control ={7,1,9,4    ,0,1000,    150,375};
-volatile s_calib calib ={50,2,5};
+volatile s_control control ={7,1,9,4    ,0,1000,    111,200};
+volatile s_calib calib ={59,125,322};
 volatile s_update update = {60};
 
 typedef struct {
@@ -108,7 +108,7 @@ ISR(INT0_vect) {
 	// do we need a rate limit by comparing with a timer?
 	if(bit_is_set(PIND, PD2)) { // rising edge only
 		stats.pulse++;
-		int temp = calib.offset + ((int)read_adc(0))*calib.numerator / calib.denominator;
+		int temp = calib.offset + ((uint32_t)read_adc(0))*calib.numerator / calib.denominator;
 		controlstate.ist+=temp;
 		controlstate.ist>>=1;
 
@@ -128,7 +128,7 @@ ISR(INT0_vect) {
 		if(controlstate.stell < 0 ) return;
 
 		// todo: replace this with phasenanschnittsteuerung
-		if(rand() * controlstate.stell/10 / RAND_MAX) {
+		if((uint32_t)rand() * controlstate.stell/10 / RAND_MAX) {
 			stats.rawduty++;
 			PORTD |= ( 1 << PD7);
 		}
