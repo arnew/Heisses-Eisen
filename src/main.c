@@ -60,7 +60,16 @@ typedef struct {
 
 #define EEPROM_DATA_SIZE (sizeof(s_eeprom))
 
+void eeprom_reset() {
+	int i;
+	for(i = 0; i<sizeof(s_eeprom) ; i++) {
+		eeprom_busy_wait();
+		eeprom_write_byte((void*)i,i);
+	}
+}
+
 void eeprom_save() {
+	cli();
 	s_eeprom data = {control,calib,update,0};
 	uint8_t *p = (uint8_t*)&data;
 	int i;
@@ -69,9 +78,11 @@ void eeprom_save() {
 		eeprom_write_byte((void*)i,p[i]);
 		if(i<sizeof(data)-2) data.crc = _crc16_update(data.crc,p[i]);
 	}
+	sei();
 }
 
 int eeprom_get() {
+	cli();
 	s_eeprom data = {{0}};
 	uint16_t crc = 0;
 	uint8_t *p = (uint8_t*)&data;
@@ -82,12 +93,14 @@ int eeprom_get() {
 		crc = _crc16_update(crc,p[i]);
 	}
 	if(crc != 0) {
-		return -1;
+		sei();
+		return 0;
 	}
 	control = data.ctl;
 	calib = data.cal;
 	update = data.upd;
-	return 0;
+	sei();
+	return 1;
 }
 
 
@@ -115,7 +128,7 @@ ISR(INT0_vect) {
 		if(controlstate.stell < 0 ) return;
 
 		// todo: replace this with phasenanschnittsteuerung
-		if(controlstate.stell > 100 || rand() * controlstate.stell / RAND_MAX) {
+		if(rand() * controlstate.stell/10 / RAND_MAX) {
 			stats.rawduty++;
 			PORTD |= ( 1 << PD7);
 		}
@@ -157,8 +170,11 @@ void showupdate() {
 
 void process_cmd(char *p) {
 	switch(*p) {
-		case 'l': eeprom_get(); break;
+		case 'l': if(eeprom_get()) { uart_puts("params read:\r\n"); showstatus(); } 
+			  else { uart_puts("params read fail\r\n"); }; 
+			  break;
 		case 's': eeprom_save(); break;
+		case 'r': eeprom_reset(); break;
 
 		case 'S': showstatus(); break;
 		case 'R': update.ticks = atoi(p+1); break;
@@ -216,6 +232,7 @@ int main(void) {
 	TCCR0 |= (1 << CS02) | (1 << CS00); // Timer0, Clock/1024
 	TIMSK |= (1<<TOIE0); //Interrupt auf Overflow
 
+	eeprom_get();
 	sei();
 	_delay_ms(1000);
 	while(1) {
