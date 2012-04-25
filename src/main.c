@@ -49,7 +49,7 @@ typedef struct {
 } s_update;
 
 volatile s_control control ={7,1,9,4    ,0,1000,    111,200};
-volatile s_calib calib ={59,125,322,18};
+volatile s_calib calib ={59,125,322,17};
 volatile s_update update = {60};
 
 typedef struct {
@@ -151,7 +151,7 @@ void showstatus() {
 	char buf[80];
 	snprintf(buf,80,"PID: P: %i I: %i D: %i imin: %i imax: %i\r\n",control.p,control.i, control.d, control.imin, control.imax);
 	uart_puts(buf);
-	snprintf(buf,80,"calib: y= %i/%i * x + %i duty: %x\r\n",calib.numerator, calib.denominator, calib.offset, calib.duty);
+	snprintf(buf,80,"calib: y= %i/%i * x + %i duty: %u\r\n",calib.numerator, calib.denominator, calib.offset, calib.duty);
 	uart_puts(buf);
 	snprintf(buf,80,"EEPROM: %u\r\n",EEPROM_DATA_SIZE);
 	uart_puts(buf);
@@ -160,7 +160,8 @@ void showstatus() {
 
 void showupdate() {
 	char buf[80];
-	snprintf(buf,80,"soll: %3u ist: %3i i: %i d: %3i stell: %4i On: %2d #: %2d duty: %3u%%\r\n",
+	snprintf(buf,80,"%4x|soll: %3u ist: %3i i: %i d: %3i stell: %4i On: %2d #: %2d duty: %3u%%\r\n",
+			ticks,
 			control.soll,
 			controlstate.ist ,controlstate.i,controlstate.d,
 			controlstate.stell,
@@ -259,7 +260,9 @@ int main(void) {
 		}
 		if(nextupdate < ticks) {
 			showupdate();
+			if(nextupdate + update.ticks <ticks) ticks = -1-ticks;
 			nextupdate = ticks + update.ticks;
+
 		}
 	}
 	return 0; // (hopefully) never reached
