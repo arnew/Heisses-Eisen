@@ -108,11 +108,20 @@ ISR(INT0_vect) {
 	// do we need a rate limit by comparing with a timer?
 	if(bit_is_set(PIND, PD2)) { // rising edge only
 		stats.pulse++;
-		int temp = calib.offset + ((uint32_t)read_adc(0))*calib.numerator / calib.denominator;
+		uint32_t adc_0 = read_adc(0);
+		int temp = calib.offset + adc_0*calib.numerator / calib.denominator;
 		controlstate.ist+=temp;
 		controlstate.ist>>=1;
 
+		// TEMP STOP
 		if(controlstate.ist > control.tmax) return;
+
+		// todo: replace this with phasenanschnittsteuerung
+		if(controlstate.stell <= 0 ) {} 
+		else if((uint32_t)rand() * controlstate.stell/10 / RAND_MAX) {
+			stats.rawduty++;
+			PORTD |= ( 1 << PD7);
+		}
 
 		int32_t error = control.soll - controlstate.ist;
 		int32_t p = error << control.p;
@@ -125,13 +134,6 @@ ISR(INT0_vect) {
 
 		controlstate.stell = (p + i - d) >> control.scale;
 
-		if(controlstate.stell < 0 ) return;
-
-		// todo: replace this with phasenanschnittsteuerung
-		if((uint32_t)rand() * controlstate.stell/10 / RAND_MAX) {
-			stats.rawduty++;
-			PORTD |= ( 1 << PD7);
-		}
 	} else {
 		PORTD &= ~( 1 << PD7);
 	}
