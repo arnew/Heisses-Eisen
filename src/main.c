@@ -166,7 +166,7 @@ void showupdate() {
 			controlstate.ist ,controlstate.i,controlstate.d,
 			controlstate.stell,
 			stats.rawduty, stats.pulse,
-			100 * stats.rawduty  / stats.pulse );
+			stats.pulse?100 * stats.rawduty  / stats.pulse:0 );
 	stats.pulse = stats.rawduty=0;
 	uart_puts(buf);
 }
