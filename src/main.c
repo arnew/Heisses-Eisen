@@ -4,6 +4,8 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+#include <avr/eeprom.h>
+#include <util/crc16.h>
 
 #include "adc.h"
 #include "uart.h"
@@ -13,19 +15,6 @@
 extern uint8_t uart_str_complete; 		// global status indicating pending rx'd line
 extern volatile uint8_t uart_str_count; 		// points to next "free" array index
 extern uchar_t uart_buffer[];
-
-volatile struct {
-	int ticks;
-	int next;
-} update = {60,0};
-
-volatile struct {
-	int p,i,d;
-	int scale;
-	int imin,imax;
-	uint16_t soll;
-	uint16_t tmax;
-} control={7,1,9,4    ,0,1000,    150,375};
 
 volatile struct {
 	int d;
@@ -40,13 +29,67 @@ volatile struct {
 	uint8_t duty;
 } stats;
 
-volatile struct {
+typedef struct {
+	int p,i,d;
+	int scale;
+	int imin,imax;
+	uint16_t soll;
+	uint16_t tmax;
+} s_control;
+
+typedef struct {
 	int offset;
 	int numerator;
 	int denominator;
-} calib 
-//= {50,2,5};
-={50,2,5};
+} s_calib;
+
+typedef struct {
+	int ticks;
+} s_update;
+
+volatile s_control control ={7,1,9,4    ,0,1000,    150,375};
+volatile s_calib calib ={50,2,5};
+volatile s_update update = {60};
+
+typedef struct {
+	s_control ctl;
+	s_calib cal;
+	s_update upd;
+	uint16_t crc;
+} s_eeprom;
+
+#define EEPROM_DATA_SIZE (sizeof(s_eeprom))
+
+void eeprom_save() {
+	s_eeprom data = {control,calib,update,0};
+	uint8_t *p = (uint8_t*)&data;
+	int i;
+	for(i = 0; i<sizeof(data) ; i++) {
+		eeprom_busy_wait();
+		eeprom_write_byte((void*)i,p[i]);
+		if(i<sizeof(data)-2) data.crc = _crc16_update(data.crc,p[i]);
+	}
+}
+
+int eeprom_get() {
+	s_eeprom data = {{0}};
+	uint16_t crc = 0;
+	uint8_t *p = (uint8_t*)&data;
+	int i;
+	for(i = 0; i<sizeof(data) ; i++) {
+		eeprom_busy_wait();
+		p[i] = eeprom_read_byte((void*)i);
+		crc = _crc16_update(crc,p[i]);
+	}
+	if(crc != 0) {
+		return -1;
+	}
+	control = data.ctl;
+	calib = data.cal;
+	update = data.upd;
+	return 0;
+}
+
 
 ISR(INT0_vect) {
 	// do we need a rate limit by comparing with a timer?
@@ -82,6 +125,7 @@ ISR(INT0_vect) {
 }
 
 int ticks = 0;
+int nextupdate;
 ISR(TIMER0_OVF_vect)
 {
 	ticks++;
@@ -92,6 +136,8 @@ void showstatus() {
 	snprintf(buf,80,"PID: P: %i I: %i D: %i imin: %i imax: %i\r\n",control.p,control.i, control.d, control.imin, control.imax);
 	uart_puts(buf);
 	snprintf(buf,80,"calib: y= %i/%i * x + %i\r\n",calib.numerator, calib.denominator, calib.offset);
+	uart_puts(buf);
+	snprintf(buf,80,"EEPROM: %u\r\n",EEPROM_DATA_SIZE);
 	uart_puts(buf);
 
 }
@@ -111,6 +157,9 @@ void showupdate() {
 
 void process_cmd(char *p) {
 	switch(*p) {
+		case 'l': eeprom_get(); break;
+		case 's': eeprom_save(); break;
+
 		case 'S': showstatus(); break;
 		case 'R': update.ticks = atoi(p+1); break;
 		case 'P': control.p = atoi(p+1); break;
@@ -179,9 +228,9 @@ int main(void) {
 			uart_str_complete = 0;
 			sei();
 		}
-		if(update.next < ticks) {
+		if(nextupdate < ticks) {
 			showupdate();
-			update.next = ticks + update.ticks;
+			nextupdate = ticks + update.ticks;
 		}
 	}
 	return 0; // (hopefully) never reached
