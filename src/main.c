@@ -41,6 +41,7 @@ typedef struct {
 	int offset;
 	int numerator;
 	int denominator;
+	uint16_t duty;
 } s_calib;
 
 typedef struct {
@@ -48,7 +49,7 @@ typedef struct {
 } s_update;
 
 volatile s_control control ={7,1,9,4    ,0,1000,    111,200};
-volatile s_calib calib ={59,125,322};
+volatile s_calib calib ={59,125,322,18};
 volatile s_update update = {60};
 
 typedef struct {
@@ -118,7 +119,7 @@ ISR(INT0_vect) {
 
 		// todo: replace this with phasenanschnittsteuerung
 		if(controlstate.stell <= 0 ) {} 
-		else if((uint32_t)rand() * controlstate.stell/10 / RAND_MAX) {
+		else if((uint32_t)rand() * controlstate.stell >> calib.duty) {
 			stats.rawduty++;
 			PORTD |= ( 1 << PD7);
 		}
@@ -150,7 +151,7 @@ void showstatus() {
 	char buf[80];
 	snprintf(buf,80,"PID: P: %i I: %i D: %i imin: %i imax: %i\r\n",control.p,control.i, control.d, control.imin, control.imax);
 	uart_puts(buf);
-	snprintf(buf,80,"calib: y= %i/%i * x + %i\r\n",calib.numerator, calib.denominator, calib.offset);
+	snprintf(buf,80,"calib: y= %i/%i * x + %i duty: %x\r\n",calib.numerator, calib.denominator, calib.offset, calib.duty);
 	uart_puts(buf);
 	snprintf(buf,80,"EEPROM: %u\r\n",EEPROM_DATA_SIZE);
 	uart_puts(buf);
@@ -180,32 +181,41 @@ void process_cmd(char *p) {
 
 		case 'S': showstatus(); break;
 		case 'R': update.ticks = atoi(p+1); break;
+
+
 		case 'P': control.p = atoi(p+1); break;
 		case 'I': control.i = atoi(p+1); break;
 		case 'i': control.imin = atoi(p+1); break;
 		case 'j': control.imax = atoi(p+1); break;
 		case 'D': control.d = atoi(p+1); break;
+		case 'd': control.scale = atoi(p+1); break;
+
 		case 'T': control.soll = atoi(p+1); break;
 		case 'X': control.tmax = atoi(p+1); break;
+
 		case 'B': calib.offset = atoi(p+1); break;
 		case 'M': calib.numerator = atoi(p+1); break;
 		case 'N': calib.denominator = atoi(p+1); break;
+		case 'W': calib.duty = atoi(p+1); break;
 		case 'H':
 		default:
 			  uart_puts(
+					  "l load, s store, r reset EEPROM\r\n"
 					  "R <ticks>: update rate\r\n"
 					  "S: show status \r\n"
 					  "\r\n"
 					  "P <>: control P gain\r\n"
 					  "I <>: control I gain\r\n"
+					  "i <>: control Imin\r\n"
+					  "j <>: control Imax\r\n"
 					  "D <>: control D gain\r\n"
+					  "d <>: control scale divisor\r\n"
 					  "\r\n"
 					  "T <>: control temperature\r\n"
 					  "X <>: shutoff temperature\r\n"
-					  "i <>: control Imin\r\n"
-					  "j <>: control Imax\r\n"
 					  "\r\n"
 					  "calib: y=M/N * x + B\r\n"
+					  "W <>: duty correction\r\n"
 				   );
 			  break;
 	}
