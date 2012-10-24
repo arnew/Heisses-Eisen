@@ -3,6 +3,7 @@
 //
 
 #include <avr/io.h>
+#include <avr/wdt.h>
 #include <avr/interrupt.h>
 #include "uart.h"
 
@@ -50,6 +51,10 @@ ISR(USART_RXC_vect) {
 	uchar_t buf = UDR; // only read once!
 	if (uart_str_complete == 0) {
 		if (buf !='\n' && buf != '\r' && uart_str_count < UART_MAX_STR_LEN) {
+			if( buf == 0x1b && uart_str_count == 0 ) { // RESET ON ESC AS FIRST CHAR
+				wdt_enable(WDTO_15MS); while(1);
+			}
+
 			uart_buffer[uart_str_count++] = buf;
 		} else {
 			uart_buffer[uart_str_count] = '\0';
