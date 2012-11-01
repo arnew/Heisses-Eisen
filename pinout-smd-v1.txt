@@ -1,0 +1,34 @@
+
+
+Needed pins on controller:
+to ADC ports:
+ADC0 - TEMP1_ADC
+ADC1 - PT1000_ADC
+ADC2 - 12VDC_SENSE
+
+to I/O:
+PD7 - TRAY (active LOW)
+
+PD5 - WAKE (output to PSU, active LOW)
+PD6 - HEAT1 (PWM output, active HIGH)
+PD0 - RXD - UART uC IN
+PD1 - TXD - UART uC OUT
+
+PD3- ENC1 - rot. encoder
+PD1- ENC2 - rot. encoder
+PD2 - ENC_BTN - rot. enc. button
+
+- SER - output for disp. serial data 
+- SHCP - outp. for display shift register clk 
+- STCP - outp. for display storage register clk
+PB0 - DISPEN - outp. (active LOW) display enable
+
+for ISP:
+PC6 - RST,
+PB3 - MOSI,
+PB4 - MISO, 
+PB5 - SCK, 
+5V, GND
+
+
+
