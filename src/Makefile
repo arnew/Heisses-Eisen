@@ -31,8 +31,8 @@ clean:
 	-rm -rf $(PROJECT).elf $(PROJECT).hex
 
 upload: all
-	#sudo avrdude -c ft232r -p m8 -P ft0 -U flash:w:$(PROJECT).hex -V
-	avrdude -c avrispmkII -p m8 -P usb -U flash:w:$(PROJECT).hex 
+	sudo avrdude -c ft232r -p m8 -P ft0 -U flash:w:$(PROJECT).hex -V
+#	avrdude -c avrispmkII -p m8 -P usb -U flash:w:$(PROJECT).hex 
 
 #programmer
 #  id    = "ft232r";
@@ -50,4 +50,4 @@ upload: all
 
 	#-echo "fixme"
 # tortilla ftdi bit bang:
-#	-avrdude -c avr910 -P /dev/ttyUSB0 -p m8 -i5 -U flash:w:$(PROJECT).hex -V
+	#-avrdude -c avr910 -P /dev/ttyUSB0 -p m8 -i5 -U flash:w:$(PROJECT).hex -V
